@@ -4536,9 +4536,9 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 - Option to generate the certificate outside of ACM and then import it
 - **No automatic renewal**, must import a new certificate before expiry
 - **ACM sends daily expiration events** starting 45 days prior to expiration
-- The # of days can be configured
-- Events are appearing in EventBridge
-- **AWS Config** has a managed rule named acm-certificate-expiration-check to check for expiring certificates (configurable number of days)
+  - The # of days can be configured
+  - Events are appearing in EventBridge
+- **AWS Config** has a managed rule named *acm-certificate-expiration-check* to check for expiring certificates (configurable number of days)
 
 ### ACM – Integration with ALB
 
@@ -4566,7 +4566,7 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 - **Regional**:
   - For clients within the same region
   - **The TLS Certificate must be imported on API Gateway, in the same region as the API Stage**
-  - Then setup CNAME or (better) A-Alias record in Route 53 ap-southeast-2 linked certificate
+  - Then setup CNAME or (better) A-Alias record in Route 53
 
 ### AWS Secrets Manager
 
@@ -4575,7 +4575,7 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 - Newer service, meant for storing secrets
 - Capability to force **rotation of secrets** every X days
 - Automate generation of secrets on rotation (uses Lambda)
-- Integration with** Amazon RDS** (MySQL, PostgreSQL, Aurora)
+- Integration with **Amazon RDS** (MySQL, PostgreSQL, Aurora)
 - Secrets are encrypted using KMS
 - Mostly meant for RDS integration
 
@@ -4584,7 +4584,7 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 - Replicate Secrets across multiple AWS Regions
 - Secrets Manager keeps read replicas in sync with the primary Secret
 - Ability to promote a read replica Secret to a standalone Secret
-- Use cases: multi-region apps, disaster recovery strategies, multi-region DB… us-east-1 (Primary) replicate (primary) us-west-2 (Secondary) (replica)
+- Use cases: multi-region apps, disaster recovery strategies, multi-region DB…
 
 ### SSM Parameter Store vs Secrets Manager
 
@@ -4619,6 +4619,7 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 
 ### Secrets Manager – Troubleshooting Rotation
 
+Troubleshoot rotation -> Rotation doesn't work -> Better place to check lambda function logs
 
 ---
 
@@ -4645,13 +4646,14 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 
 - **IAM Credentials Report (account-level)**
   - a report that lists all your account's users and the status of their various credentials
+  - *provides a detailed summary of your IAM users and their security credentials, including which users do not have Multi-Factor Authentication (MFA) enabled*. 
 - **IAM Access Advisor (user-level)**
   - Access advisor shows the service permissions granted to a user and when those services were last accessed.
   - You can use this information to revise your policies.
 
 ### IAM Access Analyzer
 
-- Find out which resources are shared externally
+- **Find out which resources are shared externally**
   - S3 Buckets
   - IAM Roles
   - KMS Keys
@@ -4659,7 +4661,7 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
   - SQS queues
   - Secrets Manager Secrets
 - Define **Zone of Trust** = AWS Account or AWS Organization
-- Access outside zone of trusts => findings Zone of trust
+- Access outside zone of trusts => findings
 
 ### What’s Identity Federation?
 
@@ -4676,16 +4678,17 @@ https://d0.awsstatic.com/whitepapers/compliance/AWS_Security_at_Scale_Logging_in
 ### SAML Federation For Enterprises
 
 - To integrate Active Directory / ADFS with AWS (or any SAML 2.0)
-- Provides access to AWS Console or CLI (through temporary creds)
+- Provides access to AWS Console or CLI *(through temporary creds)*
 - No need to create an IAM user for each of your employees
 
 ### Custom Identity Broker Application For Enterprises
 
 - Use only if identity provider is not compatible with SAML 2.0
-- The identity broker must determine the appropriate IAM policy 
+- **The identity broker must determine the appropriate IAM policy**
 
 ### AWS Cognito - Federated Identity Pools For Public Applications
 
+> **🎯 Exam Tip**: it allows you to securely manage user authentication and access to Amazon S3, enabling each user to access their own personal space while maintaining security and scalability. 
 - Goal:
   - Provide direct access to AWS Resources from the Client Side
 - How:
@@ -4763,6 +4766,7 @@ api.example.com
 
 ### How DNS Works
 
+![screenshot](/uploads/screenshot-1780559088628.png)
 
 ### Amazon Route 53
 
@@ -4771,15 +4775,16 @@ api.example.com
 - Route 53 is also a Domain Registrar
 - Ability to check the health of your resources
 - The only AWS service which provides 100% availability SLA
-- Why Route 53? 53 is a reference to the traditional DNS port example.com?
+- Why Route 53? 53 is a reference to the traditional DNS port
+![screenshot](/uploads/screenshot-1780559422433.png)
 
 ### Route 53 – Records
 
 - How you want to route traffic for a domain
 - Each record contains:
   - **Domain/subdomain Name** – e.g., example.com
-  - **Record Type **– e.g., A or AAAA
-  - **Value **– e.g., 12.34.56.78
+  - **Record Type** – e.g., A or AAAA
+  - **Value** – e.g., 12.34.56.78
   - **Routing Policy** – how Route 53 responds to queries
   - **TTL** – amount of time the record cached at DNS Resolvers
 - Route 53 supports the following DNS record types:
@@ -4792,7 +4797,7 @@ api.example.com
 - **AAAA**– maps a hostname to IPv6
 - **CNAME** – maps a hostname to another hostname
   - The target is a domain name which must have an A or AAAA record
-  - Can’t create a CNAME record for the top node of a DNS namespace (Zone
+  - Can’t create a CNAME record for the top node of a DNS namespace (Zone Apex)
   - Example: you can’t create for example.com, but you can create for www.example.com
 - **NS** – Name Servers for the Hosted Zone
   - Control how traffic is routed for a domain
@@ -4806,6 +4811,7 @@ api.example.com
 
 ### Route 53 – Public vs. Private Hosted Zones
 
+![screenshot](/uploads/screenshot-1780559203543.png)
 
 ### Common DNS Record Types for Email
 
@@ -4827,7 +4833,8 @@ api.example.com
    - → Add SES verification + DKIM + SPF records.
 4. **Optional**: Add **MX record** if receiving mail through SES.
 5. **Wait for propagation** → SES status changes to **“verified.”**
-- Use the “Create Record in Route 53” button directly from SES → auto-creates 
+
+Use the **“Create Record in Route 53”** button directly from SES → auto-creates 
 verification, DKIM, and SPF records.
 
 ### Route 53 – Records TTL (Time To Live)
@@ -4836,12 +4843,12 @@ verification, DKIM, and SPF records.
 
 - **High TTL – e.g., 24 hr**
   - Less traffic on Route 53
-  - Possibly outdated records equest ?
+  - Possibly outdated records
 - **Low TTL – e.g., 60 sec.**
   - More traffic on Route 53 ($$)
   - Records are outdated for less time
   - Easy to change records
-- Except for Alias records, TTL is mandatory for each DNS record (with T ques t spon se
+- **Except for Alias records, TTL is mandatory for each DNS record**
 
 ### CNAME vs Alias
 
@@ -4856,31 +4863,33 @@ verification, DKIM, and SPF records.
   - Free of charge
   - Native health check
 
-### Load Balancer
+### Route 53 – Alias Records
 
 - Maps a hostname to an AWS resource
 - An extension to DNS functionality Alias Record (Enabled)
 - Automatically recognizes changes in the Record Name Type resource’s IP addresses example.com
-- Unlike CNAME, it can be used for the top node of a DNS namespace (Zone Apex), e.g.:
+- Unlike CNAME, it can be used for the top node of a DNS namespace (Zone Apex), e.g.: example.com
 - Alias Record is always of type A/AAAA for MyALB-123456789.us-east-1.elb.amazonaws.com (IP Addresses might change)
 - **You can’t set the TTL**
 
 ### Route 53 – Alias Records Targets
 
 - Elastic Load Balancers
-- CloudFront Distributions Elastic Load Balancer
+- CloudFront Distributions
 - API Gateway
 - Elastic Beanstalk environments
-- S3 Websites Elastic Beanstalk
+- S3 Websites 
 - VPC Interface Endpoints
 - Global Accelerator accelerator
 - Route 53 record in the same hosted zone Amazon
-- **You cannot set an ALIAS record for an EC2 DNS name** 
+- **You cannot set an ALIAS record for an EC2 DNS name**
+
+![screenshot](/uploads/screenshot-1780623532795.png)
 
 ### Route 53 – Routing Policies
 
 - Define how Route 53 responds to DNS queries
-- Don’t get confused by the word “Routing”
+- Don’t get confused by the word *“Routing”*
   - It’s not the same as Load balancer routing which routes the traffic
   - DNS does not route any traffic, it only responds to the DNS queries
 - Route 53 Supports the following Routing Policies
@@ -4899,6 +4908,7 @@ verification, DKIM, and SPF records.
 - **If multiple values are returned, a random one is chosen by the client**
 - When Alias enabled, specify only one AWS resource
 - Can’t be associated with Health Checks Single Value foo.example.com foo.example.com chooses a random value
+![screenshot](/uploads/screenshot-1780623878289.png)
 
 ### Routing Policies – Weighted
 
@@ -4906,7 +4916,7 @@ verification, DKIM, and SPF records.
 
 - Control the % of the requests that go to each specific resource
 - Assign each record a relative weight:
-  - 𝑡𝑟𝑎𝑓𝑓𝑖𝑐 (%) = Weight: 70 % 70 !"#$%& ()* + ,-".#(#. *".)*/
+  - ![screenshot](/uploads/screenshot-1780624460592.png)
   - Weights don’t need to sum up to 100
 - DNS records must have the same name and type
 - Can be associated with Health Checks
@@ -4918,9 +4928,10 @@ verification, DKIM, and SPF records.
 
 - Redirect to the resource that has the least latency close to us
 - Super helpful when latency for users is a priority
-- **Latency is based on traffic between users and AWS**
+- **Latency is based on traffic between users and AWS Regions**
 - Germany users may be directed to the US (if that’s the lowest latency)
-- Can be associated with Health Checks (has a failover capability) (us-east-1) (ap-southeast-1)
+- Can be associated with Health Checks (has a failover capability) 
+![screenshot](/uploads/screenshot-1780624833575.png)
 
 ### Route 53 – Health Checks
 
@@ -4958,16 +4969,17 @@ requests from Route 53 Health Checkers
 - You can use **OR, AND, or NOT**
 - Can monitor up to 256 Child Health Checks
 - Specify how many of the health checks need to pass to make the parent pass
-- Usage: perform maintenance to your website without causing all health checks to fail (Parent) (Child) (Child) (Child)
+- Usage: perform maintenance to your website without causing all health checks to fail
 
 ### Health Checks – Private Hosted Zones
 
-- Route 53 health checkers are outside the
+- Route 53 health checkers are outside the VPC
 - They can’t access **private** endpoints (private VPC or on-premises resource)
-- You can create a **CloudWatch Metric** and associate a **CloudWatch Alarm**, then create a Health Check that checks the alarm itself (us-east-1)
+- You can create a **CloudWatch Metric** and associate a **CloudWatch Alarm**, then create a Health Check that checks the alarm itself
 
 ### Routing Policies – Failover (Active-Passive)
 
+![screenshot](/uploads/screenshot-1780625701118.png)
 
 ### Routing Policies – Geolocation
 
@@ -4992,9 +5004,11 @@ requests from Route 53 Health Checkers
 
 ### Routing Policies – Geoproximity
 
+![screenshot](/uploads/screenshot-1780629289322.png)
 
 ### Routing Policies – Geoproximity
 
+![screenshot](/uploads/screenshot-1780629377950.png)
 
 ### Route 53 – Traffic flow
 
@@ -5007,7 +5021,7 @@ requests from Route 53 Health Checkers
 ### Routing Policies – IP-based Routing
 
 - **Routing is based on clients’ IP addresses**
-- You provide a list of CIDRs for your clients and the corresponding endpoints/locations (user-IP-to-endpoint mappings)
+- **You provide a list of CIDRs for your clients** and the corresponding endpoints/locations (user-IP-to-endpoint mappings)
 - Use cases: Optimize performance, reduce network costs…
 - Example: route end users from a particular ISP to a specific endpoint
 
@@ -5018,6 +5032,7 @@ requests from Route 53 Health Checkers
 - Can be associated with Health Checks (return only values for healthy resources)
 - Up to 8 healthy records are returned for each Multi-Value query
 - **Multi-Value is not a substitute for having an ELB**
+![screenshot](/uploads/screenshot-1780629878578.png)
 
 ### Domain Registar vs. DNS Service
 
@@ -5028,6 +5043,7 @@ requests from Route 53 Health Checkers
 
 ### GoDaddy as Registrar & Route 53 as DNS Service
 
+![screenshot](/uploads/screenshot-1780630177542.png)
 
 ### 3rd Party Registrar with Amazon Route 53
 
@@ -5065,7 +5081,7 @@ For acme.example.com:
 ### Route 53 – Resolver Endpoints
 
 - **Outbound Endpoint**
- - Route 53 Resolver forwards DNS queries to your DNS Resolvers us-east-1 uer y ivate?
+ - Route 53 Resolver forwards DNS queries to your DNS Resolvers
 
 ### Route 53 – DNS Query Logging
 
@@ -5084,10 +5100,11 @@ For acme.example.com:
 
 ### Route 53 – Resolver Query Logging
 
+![screenshot](/uploads/screenshot-1780631170006.png)
 
 ### Route 53 – Resolver DNS Firewall
 
-- A managed firewall enables you to filter outbound DNS requests going out through Private Hosted Zone (awscloud.private)
+- A managed firewall enables you to filter outbound DNS requests going out through Route 53 Resolver
 - Blacklist malicious domains or Whitelist trusted domains
 - Example: prevent a compromised application within your VPC to send data out through DNS to a malicious domain **(DNS exfiltration)**
 - Can be managed/configured from AWS Firewall Manager
@@ -5105,6 +5122,7 @@ For acme.example.com:
 
 ### Route 53 – Application Recovery Controller
 
+![screenshot](/uploads/screenshot-1780636354808.png)
 
 ### Route 53 – Profiles
 
@@ -5120,6 +5138,7 @@ For acme.example.com:
 ### Route 53 – Cross-Account Private Hosted Zone
 
 - You can associate Private Hosted Zone with a VPC in another Account associate
+![screenshot](/uploads/screenshot-1780636598465.png)
 
 ---
 
@@ -5127,31 +5146,24 @@ For acme.example.com:
 
 ### VPC Components Diagram
 
+![screenshot](/uploads/screenshot-1780637638294.png)
 
 ### Understanding CIDR – IPv4
 
-- Classless Inter-Domain Routing – a method for allocating IP addresses
-- Used in Security Groups rules and AWS networking in general
+- **Classless Inter-Domain Routing** – a method for allocating IP addresses
+- Used in **Security Groups** rules and AWS networking in general
+![screenshot](/uploads/screenshot-1780637750591.png)
 - They help to define an IP address range:
   - We’ve seen WW.XX.YY.ZZ/32 => one IP
   - We’ve seen 0.0.0.0/0 => all IPs
   - But we can define:192.168.0.0/26 =>192.168.0.0 – 192.168.0.63 (64 IP addresses)
 
 ### Understanding CIDR – IPv4
- 
-- **Classless Inter-Domain Routing** – a method for allocating IP addresses
-- Used in **Security Groups** rules and AWS networking in general
-- They help to define an IP address range:
-  - We’ve seen WW.XX.YY.ZZ/32 => one IP
-  - We’ve seen 0.0.0.0/0=> all IPs
-  -  But we can define:192.168.0.0/26=>192.168.0.0 – 192.168.0.63 (64 IP addresses) 
-
-### Understanding CIDR – IPv4
 
 - A CIDR consists of two components
 - Base IP
   - Represents an IP contained in the range (XX.XX.XX.XX)
-   Example: 10.0.0.0, 192.168.0.0, …
+  - Example: 10.0.0.0, 192.168.0.0, …
 - Subnet Mask
   - Defines how many bits can change in the IP
   - Example: /0, /24, /32
